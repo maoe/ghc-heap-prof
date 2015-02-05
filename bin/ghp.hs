@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
-import Data.Foldable (foldMap)
+import Data.Foldable (fold, foldMap)
 import Data.Monoid
 import Prelude hiding (unlines)
 import System.Environment
@@ -17,9 +17,7 @@ main = do
   L.hPutBuilder stdout $ thinDownBy (read factor) text
 
 thinDownBy :: Int -> L.ByteString -> L.Builder
-thinDownBy factor = unlines . map head . chunksOf factor . splitSample
-  where
-    unlines = foldMap (\b -> b <> "\n")
+thinDownBy factor = fold . map head . chunksOf factor . splitSample
 
 splitSample :: L.ByteString -> [L.Builder]
 splitSample = map unlines . split byBeginSample . L.lines
